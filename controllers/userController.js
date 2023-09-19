@@ -8,42 +8,87 @@ const generateToken = (id) => {
 }
 
 
+// const registerUser = asyncHandler(async (req, res) => {
+
+//     const { name, email, password } = req.body;
+//     if (!name || !email || !password) {
+//         res.status(400);
+//         throw new Error('Please fill in all required fields')
+//     }
+
+//     if (password.length < 6) {
+//         res.status(400);
+//         throw new Error('Password must be up to 6 characters');
+//     }
+//     const userExists = await User.findOne({ email })
+//     if (userExists) {
+//         res.status(400);
+//         throw new Error('Email has already been registered')
+//     }
+
+//     const user = await User.create({ name, email, password })
+
+//     const token = generateToken(user._id)
+
+//     if (user) {
+//         const { _id, name, email, role } = user
+//         res.cookie('token', token, { path: "/", httpOnly: true, expires: new Date(Date.now() + 1000 * 86400) })
+
+//         res.status(201).json({ _id, name, email, role, token })
+//     } else {
+//         res.status(400);
+//         throw new Error("Invalid user Data");
+
+//     }
+// })
+
+
 const registerUser = asyncHandler(async (req, res) => {
+    try {
+        const { name, email, password, role } = req.body;
 
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-        res.status(400);
-        throw new Error('Please fill in all required fields')
+        if (req.user && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Only administrators can create new users' });
+        }
+
+        if (!name || !email || !password || !role) {
+            return res.status(400).json({ message: 'Please fill in all required fields' });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+        }
+
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({ message: 'Email has already been registered' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({ name, email, password: hashedPassword, role });
+
+        if (user) {
+            const token = generateToken(user._id);
+            const { _id, name, email, role } = user;
+            res.cookie('token', token, { path: '/', httpOnly: true, expires: new Date(Date.now() + 1000 * 86400) });
+            return res.status(201).json({ _id, name, email, role, token });
+        } else {
+            return res.status(400).json({ message: 'Invalid user data' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Server error', error: error.message });
     }
+});
 
-    if (password.length < 6) {
-        res.status(400);
-        throw new Error('Password must be up to 6 characters');
-    }
-    const userExists = await User.findOne({ email })
-    if (userExists) {
-        res.status(400);
-        throw new Error('Email has already been registered')
-    }
 
-    const user = await User.create({ name, email, password })
 
-    const token = generateToken(user._id)
 
-    if (user) {
-        const { _id, name, email, role } = user
-        res.cookie('token', token, { path: "/", httpOnly: true, expires: new Date(Date.now() + 1000 * 86400) })
 
-        res.status(201).json({ _id, name, email, role, token })
-    } else {
-        res.status(400);
-        throw new Error("Invalid user Data");
 
-    }
-})
 
-// login
 const loginUser = asyncHandler(async (req, res) => {
+
+
 
     const { email, password } = req.body
 
@@ -63,7 +108,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     if (user && passwordIsCorrect) {
         const newUser = await User.findOne({ email }).select('-password');
-        const token = generateToken(newUser._id);
+        const userRole = newUser.userRole;
+        const token = generateToken({ _id: newUser._id, userRole });
         // res.setHeader('Authorization', `Bearer ${token}`);
         // Set the token as a cookie
         res.cookie('token', token, { path: "/", httpOnly: true, expires: new Date(Date.now() + 1000 * 86400) });

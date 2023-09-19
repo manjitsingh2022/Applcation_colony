@@ -42,15 +42,19 @@ const protect = asyncHandler(async (req, res, next) => {
 
 
 const adminMiddleware = asyncHandler(async (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    // Assuming the user's role is stored in a 'role' property of the user object
     const userRole = req.user.role;
+
     if (userRole === 'admin') {
         next();
     } else {
         res.status(403).json({ message: 'Permission denied' });
     }
 });
-
-
 
 
 module.exports = { protect, adminMiddleware }

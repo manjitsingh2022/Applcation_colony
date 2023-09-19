@@ -1,12 +1,15 @@
 const cookieParser = require('cookie-parser');
 const express = require('express');
+const createApp = require('./swagger');
+
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
 mongoose.set('strictQuery', false);
 
-const app = express();
+const app = createApp();
+
 const userRoute = require('./routes/userRoute');
 const houseRoutes = require('./routes/houseRoute');
 const maintenance = require('./routes/maintenanceRequestsRoute');
@@ -21,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 // Enable CORS for specified origins and credentials
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'https://colony.app'],
+        origin: ['http://localhost:5000', 'https://colony.app'],
         credentials: true,
     })
 );
@@ -32,12 +35,12 @@ app.use(express.json());
 app.use('/app/users', userRoute);
 app.use('/app', houseRoutes);
 app.use('/app', maintenance);
-app.use('/app', noticeRoutes)
-app.use('/app', eventRoutes)
-app.use('/app', societyMember)
+app.use('/app', noticeRoutes);
+app.use('/app', eventRoutes);
+app.use('/app', societyMember);
 
 // Error middleware should be placed after your routes
-const errorHandler = require('./middleware/errorMiddleware')
+const errorHandler = require('./middleware/errorMiddleware');
 app.use(errorHandler);
 
 app.get('/', (req, res) => {

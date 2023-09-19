@@ -29,7 +29,7 @@ const userSchema = mongoose.Schema({
     role: {
         type: String,
         required: true,
-        default: 'society member',
+        default: 'admin',
         enum: ['customer', 'admin', 'members', 'society member']
     },
     photo: {
