@@ -1,0 +1,5 @@
+export { default as Homecomponent } from '../home/home/Home'
+export { default as Contact } from './contact/Contact'
+export { default as MaintenanceRequestCard } from './home/MaintenanceRequestCard'
+export { default as Notices } from '../home/notices'
+export { default as Event } from '../home/event'

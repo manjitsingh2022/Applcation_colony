@@ -1,7 +1,0 @@
-/backend/node_modules
-/backend/package-lock
-
-/forntend/node_modules
-/forntend/package-lock
-
-.env

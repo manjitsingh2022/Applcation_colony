@@ -1,0 +1,30 @@
+/* Default link style */
+.nav-link {
+    color: #000000;
+    text-decoration: none; 
+}
+
+.nav-link:hover {
+    color: #000000; /* Change color on hover */
+    background-color: #bdbdbd; /* Add background color on hover */
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: #ffffff;
+    background-color: #999999; /* Use a valid background color code */
+}
+
+.nav-link:visited {
+    color: #660066;
+}
+.nav-link:focus {
+    background-color: #FFFF00;
+}
+
+.nav-link:target {
+    background-color: #FFFF00;
+}
+
+
+  

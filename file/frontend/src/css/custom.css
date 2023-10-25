@@ -1,0 +1,37 @@
+
+.navbar {
+    background-color: #333; 
+  }
+  
+  .navbar-brand {
+    font-size: 24px; 
+  }
+  
+  .nav-link {
+    color: #ffffff; 
+  }
+  
+  .nav-link:hover {
+    color: #ffcc00; 
+  }
+  
+ 
+.carousel-control-prev-icon, .carousel-control-next-icon{
+  filter: invert(1);
+} 
+  .main-content { 
+    padding: 20px;
+  }
+  
+  .footer {
+    background-color: #333; 
+    color: #000000;
+    text-align: center;
+    padding: 10px 0; }
+
+
+  .custom-bg{
+    background-color:#635656
+    !important;
+    color: #ffffff !important;
+  }
