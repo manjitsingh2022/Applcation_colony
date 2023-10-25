@@ -4,4 +4,4 @@
 # Build files
 /build
 /dist
-/.env
+.env
